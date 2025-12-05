@@ -10,7 +10,7 @@
     <p>{{ poll.desc }}</p>
     <ul>
         {% for op in option_list %}
-        <li>{{ op.title }} - {{ op.votes }}</li>
+        <li><a href="{% url 'pollvote' op.id %}">{{ op.title }} </a>- {{ op.votes }}</li>
         {% endfor %}
     </ul>
 </body>

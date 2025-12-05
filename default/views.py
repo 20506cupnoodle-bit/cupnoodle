@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Poll, Option
 from django.views.generic import ListView, DetailView, RedirectView
-
+from django.urls import reverse
 
 def poll_list(request):
     polls = Poll.objects.all() #全部的紀錄我都要
@@ -23,7 +23,18 @@ class pollview(DetailView):
         ctx = super().get_context_data(**kwargs)
         # 塞選的方法
         ctx["option_list"] = Option.objects.filter(poll_id=self.object.id)
+        # 做資料比對
         return ctx
+        # 加工完記得要傳回去
 
 class pollvote(RedirectView):
-    pass
+    #redirect_url = "https://ww.google.com"
+
+    def get_redirect_url(self,*args ,**kwargs):
+        option = Option.objects.get(id = self.kwargs['oid'])
+        option.votes += 1
+        option.save()
+       # return "/poll/{}?".format(option.poll.id)
+       # return super().get_redirect_url(*args, **kwargs)
+       # return reverse('pollview', args =[option.poll_id])
+        return reverse('pollview', kwargs={'pk':option.poll_id})
