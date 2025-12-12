@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Poll, Option
-from django.views.generic import ListView, DetailView, RedirectView
-from django.urls import reverse
+from django.views.generic import ListView, DetailView, RedirectView, CreateView, UpdateView
+from django.urls import reverse, reverse_lazy
 
 def poll_list(request):
     polls = Poll.objects.all() #全部的紀錄我都要
@@ -38,3 +38,30 @@ class pollvote(RedirectView):
        # return super().get_redirect_url(*args, **kwargs)
        # return reverse('pollview', args =[option.poll_id])
         return reverse('pollview', kwargs={'pk':option.poll_id})
+    
+class pollcreate(CreateView):
+    model = Poll
+    fields = '__all__' # 只顯示幾個的話就['subject', 'desc']
+    #fields顯示哪幾個欄位的資料型態
+
+    #去哪裡找頁面範本?建一個在default裡面，:poll_form.html
+
+    success_url = reverse_lazy('list')#成功之後要去哪裡
+class polledit(UpdateView):
+    model = Poll
+    fields = '__all__'
+    
+    def get_success_url(self):
+        return reverse_lazy('pollview', kwargs={'pk':self.object.id})
+    
+class OptionCreate(CreateView):
+    model = Option
+    fields = ['tittle']
+
+
+    def form_valid(self, form):
+        form.instance.poll_id = self.kwargs['pid']
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('pollview', kwargs={'pk':self.kwargs['pid']}) 
