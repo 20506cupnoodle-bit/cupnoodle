@@ -6,9 +6,14 @@
 {% block main %}
     <h1>{{ poll.subject }}</h1>
     <p>{{ poll.desc }}</p>
+    <a href="{% url 'ption_create' poll.id %}">新增選項</a>
     <ul>
         {% for op in option_list %}
-        <li><a href="{% url 'pollvote' op.id %}">{{ op.title }} </a>- {{ op.votes }}</li>
+        <li><a href="{% url 'pollvote' op.id %}">{{ op.title }} </a>- {{ op.votes }}
+                <a href="{% url 'optionedit' op.id %}">|修改</a>
+                <a href="{% url 'option_delete' op.id %}">刪除</a>
+        </li>
+        
         {% endfor %}
     </ul>
 {% endblock %} 
