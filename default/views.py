@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Poll, Option
 from django.views.generic import ListView, DetailView, RedirectView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def poll_list(request):
     polls = Poll.objects.all() #全部的紀錄我都要
@@ -39,7 +40,7 @@ class pollvote(RedirectView):
        # return reverse('pollview', args =[option.poll_id])
         return reverse('pollview', kwargs={'pk':option.poll_id})
     
-class pollcreate(CreateView):
+class pollcreate(LoginRequiredMixin, CreateView):
     model = Poll
     fields = '__all__' # 只顯示幾個的話就['subject', 'desc']
     #fields顯示哪幾個欄位的資料型態
@@ -47,14 +48,14 @@ class pollcreate(CreateView):
     #去哪裡找頁面範本?建一個在default裡面，:poll_form.html
 
     success_url = reverse_lazy('list')#成功之後要去哪裡
-class polledit(UpdateView):
+class polledit(LoginRequiredMixin, UpdateView):
     model = Poll
     fields = '__all__'
     
     def get_success_url(self):
         return reverse_lazy('pollview', kwargs={'pk':self.object.id})
     
-class OptionCreate(CreateView):
+class OptionCreate(LoginRequiredMixin, CreateView):
     model = Option
     fields = ['title']
 
@@ -66,7 +67,7 @@ class OptionCreate(CreateView):
     def get_success_url(self):
         return reverse_lazy('pollview', kwargs={'pk':self.kwargs['pid']}) 
     
-class OptionEdit(UpdateView):
+class OptionEdit(LoginRequiredMixin, UpdateView):
     model = Option
     fields = ['title']
 
@@ -76,11 +77,11 @@ class OptionEdit(UpdateView):
         return reverse_lazy('pollview', kwargs={'pk':self.object.poll_id})
     #self.object是我現在正在修改的紀錄
 
-class PollDelete(DeleteView):
+class PollDelete(LoginRequiredMixin, DeleteView):
     model = Poll
     success_url = reverse_lazy('poll_list')
 
-class OptionDelete(DeleteView):
+class OptionDelete(LoginRequiredMixin, DeleteView):
     model = Option
     def get_success_url(self):
         return reverse_lazy('pollview', kwargs={'pk':self.object.poll_id})

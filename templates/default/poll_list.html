@@ -6,9 +6,10 @@
     <u1>
         {% for poll in poll_list %} 
         <li> {{ poll.created }} <a href="{% url 'pollview' poll.id %}">{{ poll.subject }}</a>
+        {% if user.is_authenticated %}
         <a href="{% url 'poll_edit' poll.id %}">|修改</a>
-        <a href = "{% url 'poll_delete' poll.id %}">|刪除</a>
-        
+        <a href="{% url 'poll_delete' poll.id %}">|刪除</a>
+        {% endif %}
         </li>
         
         {% endfor %}

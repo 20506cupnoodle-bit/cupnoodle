@@ -10,9 +10,11 @@
     <ul>
         {% for op in option_list %}
         <li><a href="{% url 'pollvote' op.id %}">{{ op.title }} </a>- {{ op.votes }}
-                <a href="{% url 'optionedit' op.id %}">|修改</a>
-                <a href="{% url 'option_delete' op.id %}">刪除</a>
-        </li>
+        {% if user.is_authenticated %}        
+            <a href="{% url 'optionedit' op.id %}">|修改</a>
+            <a href="{% url 'option_delete' op.id %}">刪除</a>
+        {% endif %}
+            </li>
         
         {% endfor %}
     </ul>

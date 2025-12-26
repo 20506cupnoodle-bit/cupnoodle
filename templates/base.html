@@ -6,6 +6,19 @@
     <title>{% block tittle %} Document{% endblock %}</title>
 </head>
 <body>
+    <div class="container">
+        <div>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'login'%}">login</a>
+            {% else %}
+            <form action="{% url 'logout'%}" method="post">
+                {% csrf_token %}
+                Hiiii! {{ user }}
+                <input type="submit" value="logout">
+            </form>
+            {% endif %}
+        </div>
+    </div>
     {% block main %}{% endblock %}
     <a>"由cupnoodle20506李芸萱製作"</a>
 </body>
